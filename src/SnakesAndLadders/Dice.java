@@ -12,4 +12,18 @@ package SnakesAndLadders;
 public class Dice {
     private int GeneratedNumber;
     
+    public int getGeneratedNumber()
+    {
+         return GeneratedNumber;
+    }
+    
+    public void setGeneratedNumber(int GeneratedNumber)
+    {
+        this.GeneratedNumber = GeneratedNumber;
+    }
+    
+    public Dice (int GeneratedNumber)
+    {
+        this.GeneratedNumber = GeneratedNumber;
+    }
 }
