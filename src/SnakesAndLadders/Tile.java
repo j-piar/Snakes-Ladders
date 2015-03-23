@@ -1,7 +1,7 @@
 package SnakesAndLadders;
 
 /**
- *
+ *test2
  * @author 
  */
 public class Tile
