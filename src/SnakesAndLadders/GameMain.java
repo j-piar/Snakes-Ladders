@@ -4,7 +4,7 @@ package SnakesAndLadders;
  *
  * @author
  */
-public class SLMain {
+public class GameMain {
 
     public static void main(String[] args) {
     }

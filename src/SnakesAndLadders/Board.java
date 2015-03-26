@@ -67,16 +67,3 @@ public class Board
         this.tileN = tileN;
     }
 }
-
-/*
-----------------------------------------------------
-Board
-=====
-- tileN : int
----------------
-+ Board (int tileSize, int numberOfTiles)
-+ getTileProperties (TileProperties propertyToGet, int posX, int posY) : void
-- getIsSnakeOrLadder (int posX, int posY) : TileRole
---------------------------------------------------
-
-*/
