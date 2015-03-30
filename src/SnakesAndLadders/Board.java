@@ -1,6 +1,5 @@
 package SnakesAndLadders;
 
-import com.sun.istack.internal.FinalArrayList;
 import java.util.ArrayList;
 
 /**
@@ -23,10 +22,10 @@ public class Board
         { return;
         }
         
-        board = new ArrayList<ArrayList<Tile>>();
+        board = new ArrayList<>();
         for (int i = 0; i < nOfTilesOnSide ; i++)
         {
-            board.add(new ArrayList<Tile>());
+            board.add(new ArrayList<>());
             for (int j = 0; j < nOfTilesOnSide; j++)
             {
                 board.get(i).add(new Tile(tileSize));
@@ -42,19 +41,12 @@ public class Board
                 board.get(posX).get(posY).getTileSize();
                 break;
             case ROLE:
-                this.getIsSnakeOrLadder(posX, posY);
+                board.get(posX).get(posY).getPowerRole();
                 break;
             default:
                 break;
         }
         return 0;
-    }
-    private TileRole getIsSnakeOrLadder (int posX, int posY)
-    {
-        if (board.get(posX).get(posY).isSnake())
-            return TileRole.SNAKE;
-        board.get(posX).get(posY).isSnake();
-            return  TileRole.LADDER;
     }
     
     public int getTileN ()

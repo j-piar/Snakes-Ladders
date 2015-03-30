@@ -9,15 +9,27 @@ package SnakesAndLadders;
  *
  * @author Juraj Piar <juraj2.piar@live.uwe.ac.uk>
  */
-public enum TileProperties
+enum TileProperties
 { 
     SIZE,
     ROLE
 }
 
-enum TileRole
+public enum TileRole
 {
-    LADDER, SNAKE
+    LADDER("Ladder"), 
+    SNAKE("Snake");
+    
+    private final String text;
+    
+    private TileRole(final String text)
+    {
+        this.text = text;
+    }
+    @Override
+    public String toString() {
+        return text;
+    }
 }
 /*
 ----------------------------------------------------

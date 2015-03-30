@@ -1,5 +1,9 @@
 package SnakesAndLadders;
 
+import java.awt.Point;
+import java.lang.reflect.InvocationTargetException;
+
+
 /**
  *
  * @author 
@@ -7,31 +11,22 @@ package SnakesAndLadders;
 public class Tile
 {
     private int tileSize;
-    private boolean snake;
-    private boolean ladder;
+    private TileRole powerRole;
+    private Object power = null;
 
-    public boolean isLadder()
+    public Tile (int tileSize)
     {
-        return ladder;
+        this.tileSize = tileSize;
     }
-
-    public void setLadder(boolean ladder)
+    
+    public Tile (int tileSize, TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException 
     {
-        this.ladder = ladder;
+        this.tileSize = tileSize;
+        this.powerRole = power;
+        
+        this.power = ObjectMaker.makeObject(power);
     }
-
-
-    public boolean isSnake()
-    {
-        return snake;
-    }
-
-    public void setSnake(boolean snake)
-    {
-        this.snake = snake;
-    }
-
-
+    
     public int getTileSize()
     {
         return tileSize;
@@ -41,10 +36,20 @@ public class Tile
     {
         this.tileSize = tileSize;
     }
-
     
-    public Tile (int tileSize)
+    
+    public TileRole getPowerRole()
     {
-        this.tileSize = tileSize;
+        return powerRole;
+    }
+
+    public void setPowerRole (TileRole power)
+    {
+        this.powerRole = power;
+    }
+    
+    public Point getPowerDirection ()
+    {
+       return ((PowerTile)power).getEndPosition();
     }
 }
