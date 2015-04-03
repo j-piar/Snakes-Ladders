@@ -2,13 +2,14 @@ package SnakesAndLadders;
 
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
+import javax.swing.JPanel;
 
 
 /**
  *
  * @author 
  */
-public class Tile
+public class Tile extends JPanel
 {
     private int tileSize;
     private TileRole powerRole;
@@ -23,10 +24,8 @@ public class Tile
     {
         this.tileSize = tileSize;
         this.powerRole = power;
-        
         this.power = ObjectMaker.makeObject(power);
     }
-    
     public int getTileSize()
     {
         return tileSize;

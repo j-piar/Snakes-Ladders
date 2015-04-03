@@ -26,10 +26,7 @@ public class ObjectMaker
                 Class<?> clazz = Class.forName(power.toString());
                 Constructor<?> constructor = clazz.getConstructor();
                 o = constructor.newInstance();
-            } catch (ClassNotFoundException e1)
-            {
-                
-            }
+            } catch (ClassNotFoundException e1){}
         }
 
         return o;

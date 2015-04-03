@@ -5,6 +5,11 @@
  */
 package SnakesAndLadders;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 /**
  *
  * @author Juraj Piar <juraj2.piar@live.uwe.ac.uk>
@@ -18,14 +23,33 @@ enum TileProperties
 public enum TileRole
 {
     LADDER("Ladder"), 
-    SNAKE("Snake");
-    
+    SNAKE("Snake"),
+    EMPTY("Empty"),
+    START("Start"),
+    END("End");
+        
     private final String text;
     
     private TileRole(final String text)
     {
         this.text = text;
     }
+    
+    private static final List<TileRole> VALUES =
+        Collections.unmodifiableList(Arrays.asList(values()));
+    private static final int SIZE = VALUES.size();
+    private static final Random RANDOM = new Random();
+  
+    public static TileRole randRole()
+    {
+        TileRole tempRole = START;
+        while (tempRole == START || tempRole == END)
+        {
+            tempRole = VALUES.get(RANDOM.nextInt(SIZE));
+        }
+        return tempRole;
+    }
+    
     @Override
     public String toString() {
         return text;
