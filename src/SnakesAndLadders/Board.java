@@ -23,7 +23,7 @@ public class Board extends JFrame
     private JPanel boardPanel;
     private JPanel[] panels;
     private JLabel[] labels;
-    
+     
     public Board(int tileSize, int numberOfTiles)
     {
         this.tileSize = tileSize;
