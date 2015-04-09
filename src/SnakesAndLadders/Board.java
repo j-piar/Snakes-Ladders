@@ -36,10 +36,7 @@ public class Board extends JFrame
         System.out.printf("%dx%d\n", sideA, sideA);
         
         board = new ArrayList<>();
-        createTileArrL();
-        
-        board.get(0).get(0).setPowerRole(TileRole.START);
-        board.get(sideA-1).get(sideA-1).setPowerRole(TileRole.END);
+        //createTileArrL();
         createAndShowGui();
         System.out.println("\n");
     }
@@ -109,9 +106,9 @@ public class Board extends JFrame
 
     private void addComponentsToPane(Container contentPane) {
 
-        GridLayout gridLayout = new GridLayout(8, 8);
+        GridLayout gridLayout = new GridLayout(sideA, sideA);
         boardPanel.setLayout(gridLayout);
-        createTiles();
+        createTileArrL();
         //add all panels to frame
         contentPane.add(boardPanel, BorderLayout.CENTER);
     }
@@ -122,12 +119,8 @@ public class Board extends JFrame
         int count = 0;
         for (row = 0; row < sideA; row++) {
             for (int col = 0; col < sideA; col++) {
-                panels[count] = new Tile(tileSize);
+                panels[count] = board.get(row).get(col);
                 panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
-                if (count%2 == 0)
-                panels[count].setBackground(Color.red);
-                else
-                    panels[count].setBackground(Color.BLACK);
                 count++;
             }
         }
@@ -140,6 +133,7 @@ public class Board extends JFrame
     }
     private void createTileArrL()
     {
+        int count = 0;
         for (int i = 0; i < sideA ; i++)
         {
             System.out.println("");
@@ -149,13 +143,22 @@ public class Board extends JFrame
                 try
                 {
                     board.get(i).add(new Tile(tileSize, TileRole.randRole()));
-                    Tile tempTile = board.get(i).get(j);
-                    System.out.printf(tempTile.getPowerRole().toString());
+                    panels[count] = board.get(i).get(j);
+                    panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
                 {
                     Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                count++;
             }
+        }
+        board.get(0).get(0).setPowerRole(TileRole.START);
+        board.get(sideA-1).get(sideA-1).setPowerRole(TileRole.END);
+        
+        for (int i = 0; i < numberOfTiles; i++)
+        {
+            //labels[i] = new Tile(tileSize);
+            boardPanel.add(panels[i]);
         }
     }
 }
