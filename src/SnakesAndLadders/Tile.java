@@ -1,5 +1,7 @@
 package SnakesAndLadders;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
@@ -50,5 +52,13 @@ public class Tile extends JPanel
     public Point getPowerDirection ()
     {
        return ((PowerTile)power).getEndPosition();
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        g.setColor(Color.BLACK);
+        g.drawRect(tileSize, tileSize, tileSize, tileSize);
     }
 }
