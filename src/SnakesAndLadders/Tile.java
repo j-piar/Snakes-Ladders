@@ -13,27 +13,27 @@ import javax.swing.JPanel;
  */
 public class Tile extends JPanel
 {
-    private int tileSize;
+    private Point tileSize;
     private TileRole powerRole;
     private Object power = null;
 
-    public Tile (int tileSize)
+    public Tile (Point tileSize)
     {
         this.tileSize = tileSize;
     }
     
-    public Tile (int tileSize, TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException 
+    public Tile (Point tileSize, TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException 
     {
         this.tileSize = tileSize;
         this.powerRole = power;
         this.power = ObjectMaker.makeObject(power);
     }
-    public int getTileSize()
+    public Point getTileSize()
     {
         return tileSize;
     }
 
-    public void setTileSize(int tileSize)
+    public void setTileSize(Point tileSize)
     {
         this.tileSize = tileSize;
     }
@@ -59,6 +59,6 @@ public class Tile extends JPanel
     {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
-        g.drawRect(tileSize, tileSize, tileSize, tileSize);
+        g.drawRect(0, 0, tileSize.x, tileSize.y);
     }
 }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-
 /**
  *
  * @author Juraj Piar <juraj2.piar@live.uwe.ac.uk>
@@ -19,6 +18,8 @@ public class Board extends JFrame
     private int numberOfTiles = 100;
     private int sideA;
     private int tileSize;
+    private GridLayout gridLayout;
+    private Point boardSize;
     
     private JPanel boardPanel;
     private JPanel[] panels;
@@ -30,6 +31,7 @@ public class Board extends JFrame
         this.numberOfTiles = numberOfTiles;
         boardPanel = new JPanel();
         boardPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        boardSize = new Point(600, 600);
         panels = new Tile[numberOfTiles];
         //labels = new Tile[numberOfTiles];
         sideA = calcSideA(numberOfTiles);
@@ -76,7 +78,7 @@ public class Board extends JFrame
         return board.get(xyCoordinates.x).get(xyCoordinates.y).getPowerRole();
     }
     
-    public int getTileSize(Point xyCoordinates)
+    public Point getTileSize(Point xyCoordinates)
     {
         return board.get(xyCoordinates.x).get(xyCoordinates.y).getTileSize();
     }
@@ -99,37 +101,18 @@ public class Board extends JFrame
 
         addComponentsToPane(getContentPane());
 
-        setSize(800, 600);
+        setSize(boardSize.x, boardSize.y);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private void addComponentsToPane(Container contentPane) {
 
-        GridLayout gridLayout = new GridLayout(sideA, sideA);
+        gridLayout = new GridLayout(sideA, sideA);
         boardPanel.setLayout(gridLayout);
         createTileArrL();
         //add all panels to frame
         contentPane.add(boardPanel, BorderLayout.CENTER);
-    }
-    
-    private void createTiles()
-    {
-        int row;
-        int count = 0;
-        for (row = 0; row < sideA; row++) {
-            for (int col = 0; col < sideA; col++) {
-                panels[count] = board.get(row).get(col);
-                panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
-                count++;
-            }
-        }
-        
-        for (int i = 0; i < numberOfTiles; i++)
-        {
-            //labels[i] = new Tile(tileSize);
-            boardPanel.add(panels[i]);
-        }
     }
     private void createTileArrL()
     {
@@ -142,7 +125,7 @@ public class Board extends JFrame
             {
                 try
                 {
-                    board.get(i).add(new Tile(tileSize, TileRole.randRole()));
+                    board.get(i).add(new Tile(new Point(boardSize.x/sideA, boardSize.y/sideA), TileRole.randRole()));
                     panels[count] = board.get(i).get(j);
                     panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
