@@ -19,7 +19,7 @@ public class Board extends JFrame
     private int sideA;
     private int tileSize;
     private GridLayout gridLayout;
-    private Point boardSize;
+    private Point boardSize = new Point(800, 600);
     
     private JPanel boardPanel;
     private JPanel[] panels;
@@ -31,7 +31,6 @@ public class Board extends JFrame
         this.numberOfTiles = numberOfTiles;
         boardPanel = new JPanel();
         boardPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        boardSize = new Point(600, 600);
         panels = new Tile[numberOfTiles];
         //labels = new Tile[numberOfTiles];
         sideA = calcSideA(numberOfTiles);

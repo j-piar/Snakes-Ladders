@@ -57,8 +57,10 @@ public class Tile extends JPanel
     @Override
     protected void paintComponent(Graphics g)
     {
-        super.paintComponent(g);
-        g.setColor(Color.BLACK);
-        g.drawRect(0, 0, tileSize.x, tileSize.y);
+        String printRole = this.getPowerRole().toString();
+        super.paintComponent (g);
+        g.setColor (Color.BLACK);
+        g.drawRect (0, 0, tileSize.x, tileSize.y);
+        g.drawString ((printRole.equals(TileRole.EMPTY.toString()) ? new String(" "): printRole), 20, 20);
     }
 }

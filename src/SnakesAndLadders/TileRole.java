@@ -43,9 +43,9 @@ public enum TileRole
     public static TileRole randRole()
     {
         TileRole tempRole = START;
-        while (tempRole == START || tempRole == END)
+        while (tempRole == START)
         {
-            tempRole = VALUES.get(RANDOM.nextInt(SIZE));
+            tempRole = VALUES.get(RANDOM.nextInt(4));
         }
         return tempRole;
     }
