@@ -25,10 +25,6 @@ public enum TileRole
     LADDER("Ladder"), 
     SNAKE("Snake"),
     EMPTY("Empty"),
-    EMPTY0("Empty"),
-    EMPTY1("Empty"),
-    EMPTY2("Empty"),
-    EMPTY3("Empty"),
     START("Start"),
     END("End");
         

@@ -3,6 +3,7 @@ package SnakesAndLadders;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -15,6 +16,7 @@ public class Board extends JFrame
     private int tileN;
     private Tile tile;
     private ArrayList<ArrayList<Tile>> board;
+    private ArrayList<TileRole> noDirectRoles = new ArrayList<>();
     private int numberOfTiles = 100;
     private int sideA;
     private int tileSize;
@@ -118,18 +120,32 @@ public class Board extends JFrame
         int count = 0;
         int snakeCount = 0;
         int ladderCount = 0;
+        ArrayList<Point> powerEndPoints = new ArrayList<>();
+        int colCount;
+        
+        noDirectRoles.add(TileRole.EMPTY);
+        noDirectRoles.add(TileRole.END);
+        noDirectRoles.add(TileRole.START);
+        
         ArrayList<TileRole> blackListRoles = new ArrayList<>();;
         for (int i = 0; i < sideA ; i++)
         {
+            colCount = 0;
             System.out.println("");
             board.add(new ArrayList<>());
             for (int j = 0; j < sideA; j++)
             {
                 blackListRoles.clear();
-                if (count <= sideA)
+                if (colCount == sideA/(sideA/2))
+                {
+                    blackListRoles.add(TileRole.SNAKE);
+                    blackListRoles.add(TileRole.LADDER);
+                }
+                else if (count <= sideA)
                     blackListRoles.add(TileRole.SNAKE);
                 else if (count >= numberOfTiles - sideA)
                     blackListRoles.add(TileRole.LADDER);
+                
                 blackListRoles.add(TileRole.START);
                 blackListRoles.add(TileRole.END);
                 try
@@ -138,6 +154,7 @@ public class Board extends JFrame
                     board.get(i).add(new Tile(new Point(boardSize.x/sideA, boardSize.y/sideA), tmpRole));
                     panels[count] = board.get(i).get(j);
                     board.get(0).get(0).setBackground(Color.red);
+                    
                     Tile tmpTile = board.get((j == 0 && i > 0 ? i - 1 : i)).get((j == 0 ? 0 : j - 1));
                     if (tmpTile.getPowerRole() == tmpRole && !tmpTile.getPowerRole().equals(TileRole.EMPTY))
                         tmpTile.setPowerRole(TileRole.EMPTY);
@@ -145,11 +162,23 @@ public class Board extends JFrame
                         snakeCount++;
                     else if (tmpTile.getPowerRole().equals(TileRole.LADDER))
                         ladderCount++;
+                    if (!noDirectRoles.contains(tmpTile.getPowerRole()))
+                    {
+                        do
+                        {
+                            tmpTile.setPowerDirection(new Point(new Random().nextInt(sideA),new Random().nextInt(sideA))); //(new Random().nextInt(sideA), new Random().nextInt(sideA)));
+                        }while (powerEndPoints.contains(tmpTile.getPowerDirection()));
+////PRINTS->
+                        System.out.println("Power: " + tmpTile.getPowerRole().toString());
+                        powerEndPoints.add(tmpTile.getPowerDirection());
+                        System.out.println("direction: " + tmpTile.getPowerDirection().toString());
+                    }
                     panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
                 {
                     Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                colCount++;
                 count++;
             }
         }

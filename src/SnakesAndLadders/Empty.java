@@ -11,11 +11,8 @@ import java.awt.Point;
  *
  * @author Juraj Piar <juraj2.piar@live.uwe.ac.uk>
  */
-public class Ladder implements PowerTile
+public class Empty implements PowerTile
 {
-    private Point ladderBottom, ladderTop;    
-    
-    public Ladder(){}
     
     @Override
     public TileRole getPowerName ()
@@ -26,29 +23,29 @@ public class Ladder implements PowerTile
     @Override
     public boolean IsDirectional ()
     {
-        return true;
+        return false;
     }
     
     @Override
     public Point getStartPosition ()
     {
-        return ladderBottom;
+        return null;
     }    
     @Override
     public void setStartPosition (Point startPosition)
     {
-        this.ladderBottom = startPosition;
+        
     }
     
     @Override
     public Point getEndPosition ()
     {
-        return ladderTop;
+        return null;
     }
     @Override
     public void setEndPosition (Point endPosition)
     {
-        this.ladderTop = endPosition;
+        
     }
     
 }

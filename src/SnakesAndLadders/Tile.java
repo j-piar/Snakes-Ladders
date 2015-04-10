@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 
 
@@ -15,12 +16,7 @@ public class Tile extends JPanel
 {
     private Point tileSize;
     private TileRole powerRole;
-    private Object power = null;
-
-    public Tile (Point tileSize)
-    {
-        this.tileSize = tileSize;
-    }
+    private Object power;
     
     public Tile (Point tileSize, TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException 
     {
@@ -49,9 +45,14 @@ public class Tile extends JPanel
         this.powerRole = power;
     }
     
-    public Point getPowerDirection ()
+    public Point getPowerDirection()
     {
        return ((PowerTile)power).getEndPosition();
+    }
+    
+    public void setPowerDirection (Point powerEnd)
+    {
+        ((PowerTile)power).setEndPosition(powerEnd);
     }
     
     @Override
@@ -61,6 +62,6 @@ public class Tile extends JPanel
         super.paintComponent (g);
         g.setColor (Color.BLACK);
         g.drawRect (0, 0, tileSize.x, tileSize.y);
-        g.drawString ((printRole.equals(TileRole.EMPTY.toString()) ? new String(" "): printRole), 20, 20);
+        g.drawString ((printRole.equals(TileRole.EMPTY.toString()) ? " " : printRole), 20, 20);
     }
 }

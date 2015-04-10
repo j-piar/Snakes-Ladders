@@ -6,6 +6,7 @@
 package SnakesAndLadders;
 
 import java.awt.Point;
+import java.util.Random;
 
 /**
  *
@@ -13,6 +14,7 @@ import java.awt.Point;
  */
 public interface PowerTile
 {    
+    static final Random RANDOM = new Random();
     boolean IsDirectional ();
     Point getStartPosition ();
     void setStartPosition (Point startPosition);
