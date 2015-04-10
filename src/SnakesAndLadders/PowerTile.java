@@ -5,27 +5,18 @@
  */
 package SnakesAndLadders;
 
+import java.awt.Point;
+
 /**
  *
  * @author Juraj Piar <juraj2.piar@live.uwe.ac.uk>
  */
-public enum TileProperties
-{
-    SIZE,
-    ROLE
+public interface PowerTile
+{    
+    boolean IsDirectional ();
+    Point getStartPosition ();
+    void setStartPosition (Point startPosition);
+    Point getEndPosition ();
+    void setEndPosition (Point endPosition);
+    TileRole getPowerName();
 }
-
-enum TileRole
-{
-    LADDER, SNAKE
-}
-/*
-----------------------------------------------------
-
-<<enumeration>>
-TileProperties
-================
-SIZE, ROLE
-
-----------------------------------------------------
-*/

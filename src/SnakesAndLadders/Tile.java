@@ -1,50 +1,66 @@
 package SnakesAndLadders;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.lang.reflect.InvocationTargetException;
+import javax.swing.JPanel;
+
+
 /**
  *
  * @author 
  */
-public class Tile
+public class Tile extends JPanel
 {
-    private int tileSize;
-    private boolean snake;
-    private boolean ladder;
+    private Point tileSize;
+    private TileRole powerRole;
+    private Object power = null;
 
-    public boolean isLadder()
+    public Tile (Point tileSize)
     {
-        return ladder;
+        this.tileSize = tileSize;
     }
-
-    public void setLadder(boolean ladder)
+    
+    public Tile (Point tileSize, TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException 
     {
-        this.ladder = ladder;
+        this.tileSize = tileSize;
+        this.powerRole = power;
+        this.power = ObjectMaker.makeObject(power);
     }
-
-
-    public boolean isSnake()
-    {
-        return snake;
-    }
-
-    public void setSnake(boolean snake)
-    {
-        this.snake = snake;
-    }
-
-
-    public int getTileSize()
+    public Point getTileSize()
     {
         return tileSize;
     }
 
-    public void setTileSize(int tileSize)
+    public void setTileSize(Point tileSize)
     {
         this.tileSize = tileSize;
     }
-
     
-    public Tile (int tileSize)
+    
+    public TileRole getPowerRole()
     {
-        this.tileSize = tileSize;
+        return powerRole;
+    }
+
+    public void setPowerRole (TileRole power)
+    {
+        this.powerRole = power;
+    }
+    
+    public Point getPowerDirection ()
+    {
+       return ((PowerTile)power).getEndPosition();
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g)
+    {
+        String printRole = this.getPowerRole().toString();
+        super.paintComponent (g);
+        g.setColor (Color.BLACK);
+        g.drawRect (0, 0, tileSize.x, tileSize.y);
+        g.drawString ((printRole.equals(TileRole.EMPTY.toString()) ? new String(" "): printRole), 20, 20);
     }
 }
