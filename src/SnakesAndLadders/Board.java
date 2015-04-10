@@ -116,6 +116,8 @@ public class Board extends JFrame
     private void createTileArrL()
     {
         int count = 0;
+        int snakeCount = 0;
+        int ladderCount = 0;
         ArrayList<TileRole> blackListRoles = new ArrayList<>();;
         for (int i = 0; i < sideA ; i++)
         {
@@ -135,6 +137,14 @@ public class Board extends JFrame
                     TileRole tmpRole = TileRole.randRole(blackListRoles);
                     board.get(i).add(new Tile(new Point(boardSize.x/sideA, boardSize.y/sideA), tmpRole));
                     panels[count] = board.get(i).get(j);
+                    board.get(0).get(0).setBackground(Color.red);
+                    Tile tmpTile = board.get((j == 0 && i > 0 ? i - 1 : i)).get((j == 0 ? 0 : j - 1));
+                    if (tmpTile.getPowerRole() == tmpRole && !tmpTile.getPowerRole().equals(TileRole.EMPTY))
+                        tmpTile.setPowerRole(TileRole.EMPTY);
+                    if (tmpTile.getPowerRole().equals(TileRole.SNAKE))
+                        snakeCount++;
+                    else if (tmpTile.getPowerRole().equals(TileRole.LADDER))
+                        ladderCount++;
                     panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
                 {
@@ -143,6 +153,7 @@ public class Board extends JFrame
                 count++;
             }
         }
+        System.out.println("Ladders: " + ladderCount + " Snakes: " + snakeCount);
         board.get(0).get(0).setPowerRole(TileRole.START);
         board.get(sideA-1).get(sideA-1).setPowerRole(TileRole.END);
         

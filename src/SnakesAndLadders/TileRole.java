@@ -25,10 +25,13 @@ public enum TileRole
     LADDER("Ladder"), 
     SNAKE("Snake"),
     EMPTY("Empty"),
+    EMPTY0("Empty"),
+    EMPTY1("Empty"),
+    EMPTY2("Empty"),
     START("Start"),
     END("End");
         
-    private final String text;
+    private final String text;  
     
     private TileRole(final String text)
     {
@@ -39,6 +42,8 @@ public enum TileRole
         Collections.unmodifiableList(Arrays.asList(values()));
     private static final int SIZE = VALUES.size();
     private static final Random RANDOM = new Random();
+    
+    
     
     public static TileRole randRole(List blackList)
     {
