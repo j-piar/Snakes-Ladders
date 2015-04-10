@@ -36,7 +36,7 @@ public class Board extends JFrame
         sideA = calcSideA(numberOfTiles);
         System.out.printf("%dx%d\n", sideA, sideA);
         
-        board = new ArrayList<>();
+        board = new ArrayList<>(numberOfTiles);
         //createTileArrL();
         createAndShowGui();
         System.out.println("\n");
@@ -116,15 +116,24 @@ public class Board extends JFrame
     private void createTileArrL()
     {
         int count = 0;
+        ArrayList<TileRole> blackListRoles = new ArrayList<>();;
         for (int i = 0; i < sideA ; i++)
         {
             System.out.println("");
             board.add(new ArrayList<>());
             for (int j = 0; j < sideA; j++)
             {
+                blackListRoles.clear();
+                if (count <= sideA)
+                    blackListRoles.add(TileRole.SNAKE);
+                else if (count >= numberOfTiles - sideA)
+                    blackListRoles.add(TileRole.LADDER);
+                blackListRoles.add(TileRole.START);
+                blackListRoles.add(TileRole.END);
                 try
                 {
-                    board.get(i).add(new Tile(new Point(boardSize.x/sideA, boardSize.y/sideA), TileRole.randRole()));
+                    TileRole tmpRole = TileRole.randRole(blackListRoles);
+                    board.get(i).add(new Tile(new Point(boardSize.x/sideA, boardSize.y/sideA), tmpRole));
                     panels[count] = board.get(i).get(j);
                     panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)

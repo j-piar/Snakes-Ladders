@@ -39,14 +39,14 @@ public enum TileRole
         Collections.unmodifiableList(Arrays.asList(values()));
     private static final int SIZE = VALUES.size();
     private static final Random RANDOM = new Random();
-  
-    public static TileRole randRole()
+    
+    public static TileRole randRole(List blackList)
     {
-        TileRole tempRole = START;
-        while (tempRole == START)
+        TileRole tempRole;
+        do
         {
-            tempRole = VALUES.get(RANDOM.nextInt(4));
-        }
+            tempRole = VALUES.get(RANDOM.nextInt(SIZE));
+        }while (blackList.contains(tempRole));
         return tempRole;
     }
     

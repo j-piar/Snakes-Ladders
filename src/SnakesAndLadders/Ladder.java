@@ -13,8 +13,7 @@ import java.awt.Point;
  */
 public class Ladder implements PowerTile
 {
-    private Point ladderBottom, ladderTop;
-    
+    private Point ladderBottom, ladderTop;    
         
     @Override
     public TileRole getPowerName ()
