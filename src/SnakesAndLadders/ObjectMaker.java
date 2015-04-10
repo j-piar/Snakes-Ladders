@@ -14,19 +14,20 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ObjectMaker
 {
-    public static Object makeObject(TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+    public static Object makeObject(TileRole power) 
+            throws InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException 
+    {
         Object o = null;
 
         try {
             
-            o = Class.forName(power.toString()).newInstance();
-            
-        } catch (ClassNotFoundException e) {
-            try {
-                Class<?> clazz = Class.forName(power.toString());
+           // o = Class.forName(power.toString()).newInstance();
+             Class clazz = Class.forName("SnakesAndLadders." + power.toString());
                 Constructor<?> constructor = clazz.getConstructor();
                 o = constructor.newInstance();
-            } catch (ClassNotFoundException e1){}
+                
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: " + e.getMessage());
         }
 
         return o;
