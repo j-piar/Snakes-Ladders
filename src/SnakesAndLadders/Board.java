@@ -3,6 +3,7 @@ package SnakesAndLadders;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,22 +50,6 @@ public class Board extends JFrame
             return (int)Math.sqrt(numberOfTiles);
         else
             return calcSideA(numberOfTiles - 1);
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public int[][] getBoardGrid()
-    {
-//        for (ArrayList<Tile> board1 : board)
-//        {
-//            for (Tile tile : board1)
-//            {
-//                System.out.println(tile.toString());
-//            }
-//        }
-        return (int[][]) this.board.toArray();
     }
     
     /**
@@ -156,10 +141,10 @@ public class Board extends JFrame
                     if (prevTile.getPower().getPowerName() == tmpRole && prevTile.getPower().IsDirectional())
                         prevTile.setPower(TileRole.EMPTY);
                     
+                    curTile.getPower().setStartPosition(new Point(i,j));
                     // Generate end-points of directional tiles
                     if (curTile.getPower().IsDirectional())
                     {
-                        curTile.getPower().setStartPosition(new Point(i,j));
                         System.out.println("Has end: " + String.valueOf(curTile.getPower().IsDirectional()));
                         do
                         {
@@ -220,20 +205,27 @@ public class Board extends JFrame
     {
         Point tmpStart, tmpEnd;
         ArrayList<Polygon> rolePolies = new ArrayList<>();
-        
         super.paint(g);
         for (ArrayList<Tile> board1 : board)
         {
-            for (Tile tmpTile : board1)
+            for (Tile tile : board1)
             {
-                if (tmpTile.getPower().IsDirectional())
+                if (tile.getPower().IsDirectional())
                 {
-                    tmpStart = tmpTile.getPower().getStartPosition();
-                    tmpEnd = tmpTile.getPower().getEndPosition();
-                    System.out.println("start: " + tmpStart.toString() + " end: " + tmpEnd.toString());
-                    rolePolies.add(new Polygon(new int[]{tmpStart.x, tmpEnd.x}, new int[]{tmpStart.y, tmpEnd.y}, 2));
+                    tmpStart = new Point (tile.getX() + (getWidth()/sideA/2), tile.getY() + (getWidth()/sideA/2));
+                    tmpEnd = board.get(tile.getPower().getEndPosition().y).get(tile.getPower().getEndPosition().x).getLocation();
+                    rolePolies.add(new Polygon(new int[]{tmpStart.x, tmpEnd.x},
+                            new int[]{tmpStart.y, tmpEnd.y}, 2));
+                    
                 }
             }
         }
+        rolePolies.stream().forEach((rolePoly) ->
+        {
+            g.drawPolygon(rolePoly);
+            int x1 = rolePoly.xpoints[rolePoly.xpoints.length -1];
+            int y1 = rolePoly.ypoints[rolePoly.ypoints.length -1];
+            g.drawLine(x1, y1, x1 + 5, y1 - 5);
+        });
     }
 }

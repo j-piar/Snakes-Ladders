@@ -17,6 +17,7 @@ public class Tile extends JPanel
 {
     private Point tileSize;
     private Object power;
+    private Point screenPosition;
     
     public Tile (Point tileSize, TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException 
     {
@@ -57,5 +58,15 @@ public class Tile extends JPanel
         {
             Logger.getLogger(Tile.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public Point getScreenPosition()
+    {
+        return screenPosition;
+    }
+
+    public void setScreenPosition(Point screenPosition)
+    {
+        this.screenPosition = screenPosition;
     }
 }
