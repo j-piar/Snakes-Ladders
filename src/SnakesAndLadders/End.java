@@ -11,30 +11,22 @@ import java.awt.Point;
  *
  * @author Juraj Piar <juraj2.piar@live.uwe.ac.uk>
  */
-public class Empty implements PowerTile
+public class End implements PowerTile
 {
-    private Point position;
+    Point position;
     @Override
-    public TileRole getPowerName ()
-    {
-        return TileRole.valueOf((this.getClass().getName().substring(this.getClass().getName().indexOf(".")+1)).trim().toUpperCase());
-    }
-    
+    public boolean IsDirectional() { return false; }
+
     @Override
-    public boolean IsDirectional ()
-    {
-        return false;
-    }
-    
-    @Override
-    public Point getStartPosition ()
+    public Point getStartPosition()
     {
         return position;
-    }    
+    }
+
     @Override
-    public void setStartPosition (Point startPosition)
+    public void setStartPosition(Point startPosition)
     {
-        position = startPosition;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -48,6 +40,11 @@ public class Empty implements PowerTile
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
+    public TileRole getPowerName()
+    {
+        return TileRole.valueOf(this.getClass().getName().substring(this.getClass().getName().indexOf(".")+1).trim().toUpperCase());
+    }
     
 }

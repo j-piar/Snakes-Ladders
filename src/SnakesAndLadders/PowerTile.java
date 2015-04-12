@@ -13,7 +13,7 @@ import java.util.Random;
  * @author Juraj Piar <juraj2.piar@live.uwe.ac.uk>
  */
 public interface PowerTile
-{    
+{   
     static final Random RANDOM = new Random();
     boolean IsDirectional ();
     Point getStartPosition ();

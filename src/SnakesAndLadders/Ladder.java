@@ -20,7 +20,7 @@ public class Ladder implements PowerTile
     @Override
     public TileRole getPowerName ()
     {
-        return TileRole.valueOf(this.getClass().getName().substring(this.getClass().getName().indexOf(".")+1));
+        return TileRole.valueOf(this.getClass().getName().substring(this.getClass().getName().indexOf(".")+1).trim().toUpperCase());
     }
     
     @Override
