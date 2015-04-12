@@ -116,7 +116,7 @@ public class Board extends JFrame
             for (int j = 0; j < sideA; j++)
             {
                 blackListRoles.clear();
-                if (colCount == sideA/(sideA/2))
+                if (colCount%(sideA/(sideA/1.5)) == 0)
                 {
                     blackListRoles.add(TileRole.SNAKE);
                     blackListRoles.add(TileRole.LADDER);
@@ -133,7 +133,6 @@ public class Board extends JFrame
                     TileRole tmpRole = TileRole.randRole(blackListRoles);
                     board.get(i).add(new Tile(new Point(boardSize.x/sideA, boardSize.y/sideA), tmpRole));
                     panels[count] = board.get(i).get(j);
-                    board.get(0).get(0).setBackground(Color.red);
                     Tile curTile = board.get(i).get(j);
                     
                     // Ensure that no consecutive powerTiles exist
@@ -141,33 +140,35 @@ public class Board extends JFrame
                     if (prevTile.getPower().getPowerName() == tmpRole && prevTile.getPower().IsDirectional())
                         prevTile.setPower(TileRole.EMPTY);
                     
-                    curTile.getPower().setStartPosition(new Point(i,j));
+                    curTile.getPower().setStartPosition(new Point(j,i));
                     // Generate end-points of directional tiles
                     if (curTile.getPower().IsDirectional())
                     {
-                        System.out.println("Has end: " + String.valueOf(curTile.getPower().IsDirectional()));
+                        powerEndPoints.add(curTile.getPower().getStartPosition());
+                        int lowerBound = 0, upperBound = 0, bound = 0;
+                        int tmpX, tmpY;
                         do
                         {
                             if (curTile.getPower().getPowerName().equals(TileRole.SNAKE))
                             {
-                                do
-                                {
-                                    curTile.getPower().setEndPosition(new Point
-                                        (
-                                        new Random().nextInt(sideA - (sideA - curTile.getPower().getStartPosition().x)), 
-                                        new Random().nextInt(sideA)));
-                                }while (curTile.getPower().getEndPosition().x >= curTile.getPower().getStartPosition().x);
+                                lowerBound = 0;
+                                upperBound = curTile.getPower().getStartPosition().y;
+                                bound = upperBound - lowerBound;
                             }
                             else if (curTile.getPower().getPowerName().equals(TileRole.LADDER))
                             {
-                                do
-                                {
-                                    curTile.getPower().setEndPosition(new Point
-                                        (new Random().nextInt(sideA +1) - 1, new Random().nextInt(sideA)));
-                                }while (curTile.getPower().getEndPosition().x <= curTile.getPower().getStartPosition().x);
+                                lowerBound = curTile.getPower().getStartPosition().y;
+                                upperBound = sideA;
+                                bound = upperBound - lowerBound;
                             }
-                        }while (powerEndPoints.contains(curTile.getPower().getEndPosition()) /* ||
-                                hasMoreThanNElementsOf(sideA/2, curTile.getPower().getEndPosition().x)*/);
+                            tmpY = new Random().nextInt(bound) + lowerBound ;
+                            if (tmpY == curTile.getPower().getStartPosition().y)
+                                tmpX = new Random().nextInt(sideA - curTile.getPower().getStartPosition().x) +
+                                    curTile.getPower().getStartPosition().x;
+                            else
+                                tmpX = new Random().nextInt(sideA);
+                            curTile.getPower().setEndPosition(new Point (tmpX, tmpY));
+                        }while (powerEndPoints.contains(curTile.getPower().getEndPosition()));
                         powerEndPoints.add(curTile.getPower().getEndPosition());
                     }
                    // panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
@@ -188,17 +189,6 @@ public class Board extends JFrame
             boardPanel.add(panels[i]);
         }
     }
-    private boolean hasMoreThanNElementsOf(int eThres, int number)
-    {
-        int nOfE = 0;
-        for (Point point : powerEndPoints)
-        {
-            nOfE = point.x == number ? nOfE + 1 : nOfE;
-            if (nOfE == eThres)
-                return true;
-        }
-        return false;
-    }
     
     @Override
     public void paint(Graphics g)
@@ -212,11 +202,17 @@ public class Board extends JFrame
             {
                 if (tile.getPower().IsDirectional())
                 {
-                    tmpStart = new Point (tile.getX() + (getWidth()/sideA/2), tile.getY() + (getWidth()/sideA/2));
-                    tmpEnd = board.get(tile.getPower().getEndPosition().y).get(tile.getPower().getEndPosition().x).getLocation();
-                    rolePolies.add(new Polygon(new int[]{tmpStart.x, tmpEnd.x},
-                            new int[]{tmpStart.y, tmpEnd.y}, 2));
-                    
+                    if (tile.getPower().getPowerName().equals(TileRole.LADDER))
+                    {
+                        tmpStart = new Point (tile.getX() + (getWidth()/sideA/2), tile.getY() + (getWidth()/sideA/2));
+                        tmpEnd = board.get(tile.getPower().getEndPosition().y).get(tile.getPower().getEndPosition().x).getLocation();
+                        rolePolies.add(new Polygon(new int[]{tmpStart.x, tmpEnd.x + (getWidth()/sideA/2)},
+                            new int[]{tmpStart.y, tmpEnd.y + (getWidth()/sideA/2)}, 2));
+                    }
+                    else if (tile.getPower().getPowerName().equals(TileRole.SNAKE))
+                    {
+                        
+                    }
                 }
             }
         }
@@ -225,7 +221,7 @@ public class Board extends JFrame
             g.drawPolygon(rolePoly);
             int x1 = rolePoly.xpoints[rolePoly.xpoints.length -1];
             int y1 = rolePoly.ypoints[rolePoly.ypoints.length -1];
-            g.drawLine(x1, y1, x1 + 5, y1 - 5);
+            g.fillOval(x1, y1, 20, 20);
         });
     }
 }
