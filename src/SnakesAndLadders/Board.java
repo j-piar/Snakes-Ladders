@@ -3,7 +3,6 @@ package SnakesAndLadders;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,10 +20,12 @@ public class Board extends JFrame
     private final int sideA;
     private GridLayout gridLayout;
     private final Point boardSize = new Point(800, 600);
-    
+    private boolean gameSet = false;
     private final JPanel boardPanel;
     private final JPanel[] panels;
     private JLabel[] labels;
+    private int numberOfPlayers;
+    private ArrayList<Player> listOPlayers;
     
     ArrayList<Point> powerEndPoints = new ArrayList<>();
      
@@ -39,6 +40,7 @@ public class Board extends JFrame
         System.out.printf("%dx%d\n", sideA, sideA);
         
         board = new ArrayList<>(numberOfTiles);
+        startInit();
         createAndShowGui();
         System.out.println("\n");
     }
@@ -51,22 +53,7 @@ public class Board extends JFrame
         else
             return calcSideA(numberOfTiles - 1);
     }
-    
-    /**
-     *
-     * @param xyCoordinates
-     * @return
-     */
-//    public TileRole getTileRole(Point xyCoordinates)
-//    {
-//        return board.get(xyCoordinates.x).get(xyCoordinates.y).getPower().;
-//    }
-//    
-//    public Point getTileSize(Point xyCoordinates)
-//    {
-//        return board.get(xyCoordinates.x).get(xyCoordinates.y).getTileSize();
-//    }
-    
+ 
     public int getTileN ()
     {
         return tileN;
@@ -80,9 +67,9 @@ public class Board extends JFrame
     private void createAndShowGui()
     {
         setTitle("Snake&Ladders");
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+        
+        
         addComponentsToPane(getContentPane());
 
         setSize(boardSize.x, boardSize.y);
@@ -102,6 +89,7 @@ public class Board extends JFrame
     }
     private void createTileArrL()
     {
+        powerEndPoints.add(new Point (sideA - 1, sideA - 1));
         int count = 0;
         int colCount;
         
@@ -167,7 +155,7 @@ public class Board extends JFrame
                                     curTile.getPower().getStartPosition().x;
                             else
                                 tmpX = new Random().nextInt(sideA);
-                            curTile.getPower().setEndPosition(new Point (tmpX, tmpY));
+                            curTile.getPower().setEndPosition(new Point (tmpX, tmpY));                               
                         }while (powerEndPoints.contains(curTile.getPower().getEndPosition()));
                         powerEndPoints.add(curTile.getPower().getEndPosition());
                     }
@@ -188,6 +176,13 @@ public class Board extends JFrame
         {
             boardPanel.add(panels[i]);
         }
+    } 
+    
+    private void startInit()
+    {
+        InitSettings settings = new InitSettings();
+        settings.choosePlayers();
+        setListOPlayers(settings.getPlayersList());
     }
     
     @Override
@@ -196,31 +191,36 @@ public class Board extends JFrame
         Point tmpStart, tmpEnd;
         ArrayList<Polygon> rolePolies = new ArrayList<>();
         super.paint(g);
+        int pCount = 0;
+        
+        for (Player p  : getListOPlayers())
+        {
+            Tile pTile = board.get(p.getPlayerPosition().x).get(p.getPlayerPosition().y);
+            g.setColor(p.getPlayerColour());
+            g.fill3DRect(pTile.getX()+(pTile.getWidth()/2) - pCount,
+                    pTile.getY()+(pTile.getHeight()/2)+ pCount,
+                    20, 20, false);
+            pCount += (getWidth()/sideA)/8;
+        }
+        
         for (ArrayList<Tile> board1 : board)
         {
-            for (Tile tile : board1)
+            for (Tile tile1 : board1)
             {
-                if (tile.getPower().IsDirectional())
+                if (tile1.getPower().IsDirectional())
                 {
-                    tmpStart = new Point (tile.getX() + (getWidth()/sideA/2), tile.getY() + (getWidth()/sideA/2));
-                    tmpEnd = board.get(tile.getPower().getEndPosition().y).get(tile.getPower().getEndPosition().x).getLocation();
-                    if (tile.getPower().getPowerName().equals(TileRole.LADDER))
+                    tmpStart = new Point (tile1.getX() + (getWidth()/sideA/2), tile1.getY() + (getWidth()/sideA/2));
+                    tmpEnd = board.get(tile1.getPower().getEndPosition().y).get(tile1.getPower().getEndPosition().x).getLocation();
+                    if (tile1.getPower().getPowerName().equals(TileRole.LADDER))
                     {
-//                        g.drawPolygon(new Polygon(new int[]{tmpStart.x, tmpEnd.x + (getWidth()/sideA/2)},
-//                            new int[]{tmpStart.y, tmpEnd.y + (getWidth()/sideA/2)}, 2));
-//                        g.fillOval(tmpEnd.x + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2), 20, 20);
-                        g.drawLine(tmpStart.x - 2, tmpStart.y, tmpEnd.x - 2 + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2));
-                        g.drawLine(tmpStart.x + 2, tmpStart.y, tmpEnd.x + 2 + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2));
                     }
-                    else if (tile.getPower().getPowerName().equals(TileRole.SNAKE))
+                    else if (tile1.getPower().getPowerName().equals(TileRole.SNAKE))
                     {
-                         g.drawPolygon(new Polygon(new int[]{tmpStart.x, tmpEnd.x + (getWidth()/sideA/2)},
-                            new int[]{tmpStart.y, tmpEnd.y + (getWidth()/sideA/2)}, 2));
-                        g.fillOval(tmpEnd.x + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2), 20, 20);
                     }
                 }
             }
         }
+    
 //        rolePolies.stream().forEach((rolePoly) ->
 //        {
 //            g.drawPolygon(rolePoly);
@@ -228,5 +228,27 @@ public class Board extends JFrame
 //            int y1 = rolePoly.ypoints[rolePoly.ypoints.length -1];
 //            g.fillOval(x1, y1, 20, 20);
 //        });
+ //   }
+//    private Image rotateImage(Image img, Point boardXYStart, Point boardXYEnd)
+//    {
+//        Image image = img;
+//        double angle;
+//        AffineTransform ident = new AffineTransform();
+//        
+//        if ((boardXYStart.x == boardXYEnd.x) &&
+//            (boardXYStart.y < boardXYEnd.y))
+//            angle = 0;
+//        else
+//            
+    }
+
+    public ArrayList<Player> getListOPlayers()
+    {
+        return listOPlayers;
+    }
+
+    public void setListOPlayers(ArrayList<Player> listOPlayers)
+    {
+        this.listOPlayers = listOPlayers;
     }
 }

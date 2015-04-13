@@ -22,7 +22,7 @@ public class Tile extends JPanel
     public Tile (Point tileSize, TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException 
     {
         this.tileSize = tileSize;
-        this.power = ObjectMaker.makeObject(power);
+        this.power = ObjectMaker.makeObject(power.toString());
     }
     public Point getTileSize()
     {
@@ -53,7 +53,7 @@ public class Tile extends JPanel
     {
         try
         {
-            this.power = ObjectMaker.makeObject(power);
+            this.power = ObjectMaker.makeObject(power.toString());
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException ex)
         {
             Logger.getLogger(Tile.class.getName()).log(Level.SEVERE, null, ex);

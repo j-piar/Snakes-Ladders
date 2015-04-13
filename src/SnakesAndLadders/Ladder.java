@@ -5,8 +5,8 @@
  */
 package SnakesAndLadders;
 
-import com.sun.javafx.geom.Shape;
 import java.awt.Point;
+import java.net.URL;
 
 /**
  *
@@ -15,7 +15,7 @@ import java.awt.Point;
 public class Ladder implements PowerTile
 {
     private Point ladderBottom, ladderTop;
-    //private Shape ladder = new Shape();
+    private String imageName = "ladder.png";
     
     public Ladder()
     {
@@ -70,4 +70,24 @@ public class Ladder implements PowerTile
 //        return ladder;
 //    }
 
+    public String getImageName()
+    {
+        return imageName;
+    }
+
+    public void setImageName(String imageName)
+    {
+        this.imageName = imageName;
+    }
+    
+//    @Override
+//    public URL getImgURL()
+//    {
+//        URL url = null;
+//        try {
+//            url = this.getClass().getResource(imageName);
+//        }
+//        catch(Exception e){}
+//        return url;
+//    }
 }

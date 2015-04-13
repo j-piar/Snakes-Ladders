@@ -6,6 +6,7 @@
 package SnakesAndLadders;
 
 import java.awt.Point;
+import java.net.URL;
 import java.util.Random;
 
 /**
@@ -21,4 +22,5 @@ public interface PowerTile
     Point getEndPosition ();
     void setEndPosition (Point endPosition);
     TileRole getPowerName();
+    //public URL getImgURL();
 }
