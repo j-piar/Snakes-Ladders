@@ -3,6 +3,7 @@ package SnakesAndLadders;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,21 +16,20 @@ public class Board extends JFrame
 {
     private int tileN;
     private Tile tile;
-    private ArrayList<ArrayList<Tile>> board;
-    private ArrayList<TileRole> noDirectRoles = new ArrayList<>();
+    private final ArrayList<ArrayList<Tile>> board;
     private int numberOfTiles = 100;
-    private int sideA;
-    private int tileSize;
+    private final int sideA;
     private GridLayout gridLayout;
-    private Point boardSize = new Point(800, 600);
+    private final Point boardSize = new Point(800, 600);
     
-    private JPanel boardPanel;
-    private JPanel[] panels;
+    private final JPanel boardPanel;
+    private final JPanel[] panels;
     private JLabel[] labels;
+    
+    ArrayList<Point> powerEndPoints = new ArrayList<>();
      
-    public Board(int tileSize, int numberOfTiles)
+    public Board(int numberOfTiles)
     {
-        this.tileSize = tileSize;
         this.numberOfTiles = numberOfTiles;
         boardPanel = new JPanel();
         boardPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -39,7 +39,6 @@ public class Board extends JFrame
         System.out.printf("%dx%d\n", sideA, sideA);
         
         board = new ArrayList<>(numberOfTiles);
-        //createTileArrL();
         createAndShowGui();
         System.out.println("\n");
     }
@@ -55,34 +54,18 @@ public class Board extends JFrame
     
     /**
      *
-     * @return
-     */
-    public int[][] getBoardGrid()
-    {
-//        for (ArrayList<Tile> board1 : board)
-//        {
-//            for (Tile tile : board1)
-//            {
-//                System.out.println(tile.toString());
-//            }
-//        }
-        return (int[][]) this.board.toArray();
-    }
-    
-    /**
-     *
      * @param xyCoordinates
      * @return
      */
-    public TileRole getTileRole(Point xyCoordinates)
-    {
-        return board.get(xyCoordinates.x).get(xyCoordinates.y).getPowerRole();
-    }
-    
-    public Point getTileSize(Point xyCoordinates)
-    {
-        return board.get(xyCoordinates.x).get(xyCoordinates.y).getTileSize();
-    }
+//    public TileRole getTileRole(Point xyCoordinates)
+//    {
+//        return board.get(xyCoordinates.x).get(xyCoordinates.y).getPower().;
+//    }
+//    
+//    public Point getTileSize(Point xyCoordinates)
+//    {
+//        return board.get(xyCoordinates.x).get(xyCoordinates.y).getTileSize();
+//    }
     
     public int getTileN ()
     {
@@ -105,38 +88,35 @@ public class Board extends JFrame
         setSize(boardSize.x, boardSize.y);
         setLocationRelativeTo(null);
         setVisible(true);
+        
     }
 
-    private void addComponentsToPane(Container contentPane) {
-
+    private void addComponentsToPane(Container contentPane) 
+    {
         gridLayout = new GridLayout(sideA, sideA);
         boardPanel.setLayout(gridLayout);
         createTileArrL();
+        
         //add all panels to frame
         contentPane.add(boardPanel, BorderLayout.CENTER);
     }
     private void createTileArrL()
     {
         int count = 0;
-        int snakeCount = 0;
-        int ladderCount = 0;
-        ArrayList<Point> powerEndPoints = new ArrayList<>();
         int colCount;
         
-        noDirectRoles.add(TileRole.EMPTY);
-        noDirectRoles.add(TileRole.END);
-        noDirectRoles.add(TileRole.START);
-        
-        ArrayList<TileRole> blackListRoles = new ArrayList<>();;
+        ArrayList<TileRole> blackListRoles = new ArrayList<>();
+        // Create rows
         for (int i = 0; i < sideA ; i++)
         {
             colCount = 0;
             System.out.println("");
             board.add(new ArrayList<>());
+            // Create columns
             for (int j = 0; j < sideA; j++)
             {
                 blackListRoles.clear();
-                if (colCount == sideA/(sideA/2))
+                if (colCount%(sideA/(sideA/1.5)) == 0)
                 {
                     blackListRoles.add(TileRole.SNAKE);
                     blackListRoles.add(TileRole.LADDER);
@@ -153,27 +133,45 @@ public class Board extends JFrame
                     TileRole tmpRole = TileRole.randRole(blackListRoles);
                     board.get(i).add(new Tile(new Point(boardSize.x/sideA, boardSize.y/sideA), tmpRole));
                     panels[count] = board.get(i).get(j);
-                    board.get(0).get(0).setBackground(Color.red);
+                    Tile curTile = board.get(i).get(j);
                     
-                    Tile tmpTile = board.get((j == 0 && i > 0 ? i - 1 : i)).get((j == 0 ? 0 : j - 1));
-                    if (tmpTile.getPowerRole() == tmpRole && !tmpTile.getPowerRole().equals(TileRole.EMPTY))
-                        tmpTile.setPowerRole(TileRole.EMPTY);
-                    if (tmpTile.getPowerRole().equals(TileRole.SNAKE))
-                        snakeCount++;
-                    else if (tmpTile.getPowerRole().equals(TileRole.LADDER))
-                        ladderCount++;
-                    if (!noDirectRoles.contains(tmpTile.getPowerRole()))
+                    // Ensure that no consecutive powerTiles exist
+                    Tile prevTile = board.get(( (j == 0 && i > 0) ? i - 1 : i)).get((j == 0 ? 0 : j - 1));
+                    if (prevTile.getPower().getPowerName() == tmpRole && prevTile.getPower().IsDirectional())
+                        prevTile.setPower(TileRole.EMPTY);
+                    
+                    curTile.getPower().setStartPosition(new Point(j,i));
+                    // Generate end-points of directional tiles
+                    if (curTile.getPower().IsDirectional())
                     {
+                        powerEndPoints.add(curTile.getPower().getStartPosition());
+                        int lowerBound = 0, upperBound = 0, bound = 0;
+                        int tmpX, tmpY;
                         do
                         {
-                            tmpTile.setPowerDirection(new Point(new Random().nextInt(sideA),new Random().nextInt(sideA))); //(new Random().nextInt(sideA), new Random().nextInt(sideA)));
-                        }while (powerEndPoints.contains(tmpTile.getPowerDirection()));
-////PRINTS->
-                        System.out.println("Power: " + tmpTile.getPowerRole().toString());
-                        powerEndPoints.add(tmpTile.getPowerDirection());
-                        System.out.println("direction: " + tmpTile.getPowerDirection().toString());
+                            if (curTile.getPower().getPowerName().equals(TileRole.SNAKE))
+                            {
+                                lowerBound = 0;
+                                upperBound = curTile.getPower().getStartPosition().y;
+                                bound = upperBound - lowerBound;
+                            }
+                            else if (curTile.getPower().getPowerName().equals(TileRole.LADDER))
+                            {
+                                lowerBound = curTile.getPower().getStartPosition().y;
+                                upperBound = sideA;
+                                bound = upperBound - lowerBound;
+                            }
+                            tmpY = new Random().nextInt(bound) + lowerBound ;
+                            if (tmpY == curTile.getPower().getStartPosition().y)
+                                tmpX = new Random().nextInt(sideA - curTile.getPower().getStartPosition().x) +
+                                    curTile.getPower().getStartPosition().x;
+                            else
+                                tmpX = new Random().nextInt(sideA);
+                            curTile.getPower().setEndPosition(new Point (tmpX, tmpY));
+                        }while (powerEndPoints.contains(curTile.getPower().getEndPosition()));
+                        powerEndPoints.add(curTile.getPower().getEndPosition());
                     }
-                    panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
+                   // panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
                 {
                     Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
@@ -182,14 +180,53 @@ public class Board extends JFrame
                 count++;
             }
         }
-        System.out.println("Ladders: " + ladderCount + " Snakes: " + snakeCount);
-        board.get(0).get(0).setPowerRole(TileRole.START);
-        board.get(sideA-1).get(sideA-1).setPowerRole(TileRole.END);
+        board.get(0).get(0).setPower(TileRole.START);
+        board.get(sideA-1).get(sideA-1).setPower(TileRole.END);
+        board.get(sideA - 1).get(sideA - 1).setBackground(Color.green);
         
         for (int i = 0; i < numberOfTiles; i++)
         {
-            //labels[i] = new Tile(tileSize);
             boardPanel.add(panels[i]);
         }
+    }
+    
+    @Override
+    public void paint(Graphics g)
+    {
+        Point tmpStart, tmpEnd;
+        ArrayList<Polygon> rolePolies = new ArrayList<>();
+        super.paint(g);
+        for (ArrayList<Tile> board1 : board)
+        {
+            for (Tile tile : board1)
+            {
+                if (tile.getPower().IsDirectional())
+                {
+                    tmpStart = new Point (tile.getX() + (getWidth()/sideA/2), tile.getY() + (getWidth()/sideA/2));
+                    tmpEnd = board.get(tile.getPower().getEndPosition().y).get(tile.getPower().getEndPosition().x).getLocation();
+                    if (tile.getPower().getPowerName().equals(TileRole.LADDER))
+                    {
+//                        g.drawPolygon(new Polygon(new int[]{tmpStart.x, tmpEnd.x + (getWidth()/sideA/2)},
+//                            new int[]{tmpStart.y, tmpEnd.y + (getWidth()/sideA/2)}, 2));
+//                        g.fillOval(tmpEnd.x + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2), 20, 20);
+                        g.drawLine(tmpStart.x - 2, tmpStart.y, tmpEnd.x - 2 + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2));
+                        g.drawLine(tmpStart.x + 2, tmpStart.y, tmpEnd.x + 2 + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2));
+                    }
+                    else if (tile.getPower().getPowerName().equals(TileRole.SNAKE))
+                    {
+                         g.drawPolygon(new Polygon(new int[]{tmpStart.x, tmpEnd.x + (getWidth()/sideA/2)},
+                            new int[]{tmpStart.y, tmpEnd.y + (getWidth()/sideA/2)}, 2));
+                        g.fillOval(tmpEnd.x + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2), 20, 20);
+                    }
+                }
+            }
+        }
+//        rolePolies.stream().forEach((rolePoly) ->
+//        {
+//            g.drawPolygon(rolePoly);
+//            int x1 = rolePoly.xpoints[rolePoly.xpoints.length -1];
+//            int y1 = rolePoly.ypoints[rolePoly.ypoints.length -1];
+//            g.fillOval(x1, y1, 20, 20);
+//        });
     }
 }
