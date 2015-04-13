@@ -202,26 +202,31 @@ public class Board extends JFrame
             {
                 if (tile.getPower().IsDirectional())
                 {
+                    tmpStart = new Point (tile.getX() + (getWidth()/sideA/2), tile.getY() + (getWidth()/sideA/2));
+                    tmpEnd = board.get(tile.getPower().getEndPosition().y).get(tile.getPower().getEndPosition().x).getLocation();
                     if (tile.getPower().getPowerName().equals(TileRole.LADDER))
                     {
-                        tmpStart = new Point (tile.getX() + (getWidth()/sideA/2), tile.getY() + (getWidth()/sideA/2));
-                        tmpEnd = board.get(tile.getPower().getEndPosition().y).get(tile.getPower().getEndPosition().x).getLocation();
-                        rolePolies.add(new Polygon(new int[]{tmpStart.x, tmpEnd.x + (getWidth()/sideA/2)},
-                            new int[]{tmpStart.y, tmpEnd.y + (getWidth()/sideA/2)}, 2));
+//                        g.drawPolygon(new Polygon(new int[]{tmpStart.x, tmpEnd.x + (getWidth()/sideA/2)},
+//                            new int[]{tmpStart.y, tmpEnd.y + (getWidth()/sideA/2)}, 2));
+//                        g.fillOval(tmpEnd.x + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2), 20, 20);
+                        g.drawLine(tmpStart.x - 2, tmpStart.y, tmpEnd.x - 2 + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2));
+                        g.drawLine(tmpStart.x + 2, tmpStart.y, tmpEnd.x + 2 + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2));
                     }
                     else if (tile.getPower().getPowerName().equals(TileRole.SNAKE))
                     {
-                        
+                         g.drawPolygon(new Polygon(new int[]{tmpStart.x, tmpEnd.x + (getWidth()/sideA/2)},
+                            new int[]{tmpStart.y, tmpEnd.y + (getWidth()/sideA/2)}, 2));
+                        g.fillOval(tmpEnd.x + (getWidth()/sideA/2), tmpEnd.y + (getWidth()/sideA/2), 20, 20);
                     }
                 }
             }
         }
-        rolePolies.stream().forEach((rolePoly) ->
-        {
-            g.drawPolygon(rolePoly);
-            int x1 = rolePoly.xpoints[rolePoly.xpoints.length -1];
-            int y1 = rolePoly.ypoints[rolePoly.ypoints.length -1];
-            g.fillOval(x1, y1, 20, 20);
-        });
+//        rolePolies.stream().forEach((rolePoly) ->
+//        {
+//            g.drawPolygon(rolePoly);
+//            int x1 = rolePoly.xpoints[rolePoly.xpoints.length -1];
+//            int y1 = rolePoly.ypoints[rolePoly.ypoints.length -1];
+//            g.fillOval(x1, y1, 20, 20);
+//        });
     }
 }
