@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ObjectMaker
 {
-    public static Object makeObject(TileRole power) 
+    public static Object makeObject(String className) 
             throws InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException 
     {
         Object o = null;
@@ -22,7 +22,7 @@ public class ObjectMaker
         try {
             
            // o = Class.forName(power.toString()).newInstance();
-             Class clazz = Class.forName("SnakesAndLadders." + power.toString());
+             Class clazz = Class.forName("SnakesAndLadders." + className);
                 Constructor<?> constructor = clazz.getConstructor();
                 o = constructor.newInstance();
                 

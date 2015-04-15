@@ -1,13 +1,25 @@
 package SnakesAndLadders;
 
+import javax.swing.JApplet;
+
 /**
  *
  * @author
  */
-public class GameMain
+public class GameMain extends JApplet
 {
+    
+    /**
+     *
+     * @param args
+     */
+//    public GameMain() 
+//    {
+//        this.setContentPane(new RollDicePanel());
+//    }
+    
     public static void main(String[] args) {
-        Board board = new Board(100);
-//        System.out.println("role: " + board.getTileRole(new Point(0,0)));
+        Game newGame = new Game();
     }
 }
+
