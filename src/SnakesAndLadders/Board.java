@@ -3,6 +3,8 @@ package SnakesAndLadders;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,10 +50,10 @@ public class Board extends JFrame
     private int calcSideA(int n)
     {
         numberOfTiles = n;
-        if (numberOfTiles == Math.pow((int)Math.sqrt(numberOfTiles), 2))
-            return (int)Math.sqrt(numberOfTiles);
+        if (getNumberOfTiles() == Math.pow((int)Math.sqrt(getNumberOfTiles()), 2))
+            return (int)Math.sqrt(getNumberOfTiles());
         else
-            return calcSideA(numberOfTiles - 1);
+            return calcSideA(getNumberOfTiles() - 1);
     }
  
     public int getTileN ()
@@ -67,7 +69,7 @@ public class Board extends JFrame
     private void createAndShowGui()
     {
         setTitle("Snake&Ladders");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         
         addComponentsToPane(getContentPane());
@@ -80,7 +82,7 @@ public class Board extends JFrame
 
     private void addComponentsToPane(Container contentPane) 
     {
-        gridLayout = new GridLayout(sideA, sideA);
+        gridLayout = new GridLayout(getSideA(), getSideA());
         boardPanel.setLayout(gridLayout);
         createTileArrL();
         
@@ -89,29 +91,29 @@ public class Board extends JFrame
     }
     private void createTileArrL()
     {
-        powerEndPoints.add(new Point (sideA - 1, sideA - 1));
+        powerEndPoints.add(new Point (getSideA(), getSideA()));
         int count = 0;
         int colCount;
         
         ArrayList<TileRole> blackListRoles = new ArrayList<>();
         // Create rows
-        for (int i = 0; i < sideA ; i++)
+        for (int i = 0; i < getSideA() ; i++)
         {
             colCount = 0;
             System.out.println("");
-            board.add(new ArrayList<>());
+            getBoard().add(new ArrayList<>());
             // Create columns
-            for (int j = 0; j < sideA; j++)
+            for (int j = 0; j < getSideA(); j++)
             {
                 blackListRoles.clear();
-                if (colCount%(sideA/(sideA/1.5)) == 0)
+                if (colCount%(getSideA()/(getSideA()/1.5)) == 0)
                 {
                     blackListRoles.add(TileRole.SNAKE);
                     blackListRoles.add(TileRole.LADDER);
                 }
-                else if (count <= sideA)
+                else if (count <= getSideA())
                     blackListRoles.add(TileRole.SNAKE);
-                else if (count >= numberOfTiles - sideA)
+                else if (count >= getNumberOfTiles() - getSideA())
                     blackListRoles.add(TileRole.LADDER);
                 
                 blackListRoles.add(TileRole.START);
@@ -119,12 +121,14 @@ public class Board extends JFrame
                 try
                 {
                     TileRole tmpRole = TileRole.randRole(blackListRoles);
-                    board.get(i).add(new Tile(new Point(boardSize.x/sideA, boardSize.y/sideA), tmpRole));
-                    panels[count] = board.get(i).get(j);
-                    Tile curTile = board.get(i).get(j);
+                    getBoard().get(i).add(new Tile(new Point(getWidth()/getSideA(), getHeight()/getSideA()), tmpRole));
+                    ((Tile) getBoard().get(i).get(j)).setTileN(count);
+                    System.out.println("tile " + getBoard().get(i).get(j).getTileN() + " created");
+                    panels[count] = getBoard().get(i).get(j);
+                    Tile curTile = getBoard().get(i).get(j);
                     
                     // Ensure that no consecutive powerTiles exist
-                    Tile prevTile = board.get(( (j == 0 && i > 0) ? i - 1 : i)).get((j == 0 ? 0 : j - 1));
+                    Tile prevTile = getBoard().get(( (j == 0 && i > 0) ? i - 1 : i)).get((j == 0 ? 0 : j - 1));
                     if (prevTile.getPower().getPowerName() == tmpRole && prevTile.getPower().IsDirectional())
                         prevTile.setPower(TileRole.EMPTY);
                     
@@ -146,20 +150,20 @@ public class Board extends JFrame
                             else if (curTile.getPower().getPowerName().equals(TileRole.LADDER))
                             {
                                 lowerBound = curTile.getPower().getStartPosition().y;
-                                upperBound = sideA;
+                                upperBound = getSideA();
                                 bound = upperBound - lowerBound;
                             }
                             tmpY = new Random().nextInt(bound) + lowerBound ;
                             if (tmpY == curTile.getPower().getStartPosition().y)
-                                tmpX = new Random().nextInt(sideA - curTile.getPower().getStartPosition().x) +
+                                tmpX = new Random().nextInt(getSideA() - curTile.getPower().getStartPosition().x) +
                                     curTile.getPower().getStartPosition().x;
                             else
-                                tmpX = new Random().nextInt(sideA);
+                                tmpX = new Random().nextInt(getSideA());
                             curTile.getPower().setEndPosition(new Point (tmpX, tmpY));                               
                         }while (powerEndPoints.contains(curTile.getPower().getEndPosition()));
-                        powerEndPoints.add(curTile.getPower().getEndPosition());
+                        powerEndPoints.add(curTile.getPower().getEndPosition());                        
                     }
-                   // panels[count].setBounds(new Rectangle(new Dimension(tileSize, tileSize)));
+                   //panels[count].setBounds(new Rectangle(new Dimension(getWidth()/sideA, getHeight()/sideA)));
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
                 {
                     Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
@@ -168,12 +172,13 @@ public class Board extends JFrame
                 count++;
             }
         }
-        board.get(0).get(0).setPower(TileRole.START);
-        board.get(sideA-1).get(sideA-1).setPower(TileRole.END);
-        board.get(sideA - 1).get(sideA - 1).setBackground(Color.green);
+        getBoard().get(0).get(0).setPower(TileRole.START);
+        getBoard().get(getSideA()-1).get(getSideA()-1).setPower(TileRole.END);
+        getBoard().get(getSideA() - 1).get(getSideA() - 1).setBackground(Color.green);
         
-        for (int i = 0; i < numberOfTiles; i++)
-        {
+        Collections.reverse(Arrays.asList(panels));
+        for (int i = 0; i < getNumberOfTiles(); i++)
+        {           
             boardPanel.add(panels[i]);
         }
     } 
@@ -182,7 +187,7 @@ public class Board extends JFrame
     {
         InitSettings settings = new InitSettings();
         settings.choosePlayers();
-        setListOPlayers(settings.getPlayersList());
+        listOPlayers = settings.getPlayersList();
     }
     
     @Override
@@ -195,22 +200,22 @@ public class Board extends JFrame
         
         for (Player p  : getListOPlayers())
         {
-            Tile pTile = board.get(p.getPlayerPosition().x).get(p.getPlayerPosition().y);
+            Tile pTile = getBoard().get(p.getPlayerPosition().x).get(p.getPlayerPosition().y);
             g.setColor(p.getPlayerColour());
             g.fill3DRect(pTile.getX()+(pTile.getWidth()/2) - pCount,
                     pTile.getY()+(pTile.getHeight()/2)+ pCount,
                     20, 20, false);
-            pCount += (getWidth()/sideA)/8;
+            pCount += (getWidth()/getSideA())/8;
         }
         
-        for (ArrayList<Tile> board1 : board)
+        for (ArrayList<Tile> board1 : getBoard())
         {
             for (Tile tile1 : board1)
             {
                 if (tile1.getPower().IsDirectional())
                 {
-                    tmpStart = new Point (tile1.getX() + (getWidth()/sideA/2), tile1.getY() + (getWidth()/sideA/2));
-                    tmpEnd = board.get(tile1.getPower().getEndPosition().y).get(tile1.getPower().getEndPosition().x).getLocation();
+                    tmpStart = new Point (tile1.getX() + (getWidth()/getSideA()/2), tile1.getY() + (getWidth()/getSideA()/2));
+                    tmpEnd = getBoard().get(tile1.getPower().getEndPosition().y).get(tile1.getPower().getEndPosition().x).getLocation();
                     if (tile1.getPower().getPowerName().equals(TileRole.LADDER))
                     {
                     }
@@ -220,26 +225,6 @@ public class Board extends JFrame
                 }
             }
         }
-    
-//        rolePolies.stream().forEach((rolePoly) ->
-//        {
-//            g.drawPolygon(rolePoly);
-//            int x1 = rolePoly.xpoints[rolePoly.xpoints.length -1];
-//            int y1 = rolePoly.ypoints[rolePoly.ypoints.length -1];
-//            g.fillOval(x1, y1, 20, 20);
-//        });
- //   }
-//    private Image rotateImage(Image img, Point boardXYStart, Point boardXYEnd)
-//    {
-//        Image image = img;
-//        double angle;
-//        AffineTransform ident = new AffineTransform();
-//        
-//        if ((boardXYStart.x == boardXYEnd.x) &&
-//            (boardXYStart.y < boardXYEnd.y))
-//            angle = 0;
-//        else
-//            
     }
 
     public ArrayList<Player> getListOPlayers()
@@ -247,8 +232,18 @@ public class Board extends JFrame
         return listOPlayers;
     }
 
-    public void setListOPlayers(ArrayList<Player> listOPlayers)
+    public int getSideA()
     {
-        this.listOPlayers = listOPlayers;
+        return sideA;
+    }
+
+    public int getNumberOfTiles()
+    {
+        return numberOfTiles;
+    }
+    
+    public ArrayList<ArrayList<Tile>> getBoard()
+    {
+        return board;
     }
 }

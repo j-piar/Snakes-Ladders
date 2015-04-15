@@ -1,30 +1,25 @@
 package SnakesAndLadders;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.swing.JApplet;
 
 /**
  *
  * @author
  */
-public class GameMain
+public class GameMain extends JApplet
 {
-    private static final ArrayList<Die> dice = new ArrayList<>(Arrays.asList(new Die(), new Die()));
+    
+    /**
+     *
+     * @param args
+     */
+//    public GameMain() 
+//    {
+//        this.setContentPane(new RollDicePanel());
+//    }
     
     public static void main(String[] args) {
-        Board board = new Board(InitSettings.chooseBoardSize());
-        
-        do
-        {
-            int rolledValue = 0;
-            for (Die die : dice)
-            {
-                rolledValue += die.rollDie();
-            }
-            
-        }
-        while (board.getListOPlayers().size() >= 2);
+        Game newGame = new Game();
     }
 }
 

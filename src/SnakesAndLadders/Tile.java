@@ -18,6 +18,8 @@ public class Tile extends JPanel
     private Point tileSize;
     private Object power;
     private Point screenPosition;
+    private Color tileColor;
+    private int tileN;
     
     public Tile (Point tileSize, TileRole power) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException 
     {
@@ -40,8 +42,9 @@ public class Tile extends JPanel
         String printRole = this.getPower().getPowerName().toString();
         super.paintComponent (g);
         g.setColor (Color.BLACK);
-        g.drawRect (0, 0, tileSize.x, tileSize.y);
-        g.drawString ((printRole.equals(TileRole.EMPTY.toString()) ? " " : printRole), 20, 20);
+        g.drawRect (0, 0, getWidth(), getHeight());
+        //g.drawString ((printRole.equals(TileRole.EMPTY.toString()) ? " " : printRole), 20, 20);
+        g.drawString(String.valueOf(tileN+1), 30, 30);
     }
 
     public PowerTile getPower()
@@ -68,5 +71,25 @@ public class Tile extends JPanel
     public void setScreenPosition(Point screenPosition)
     {
         this.screenPosition = screenPosition;
+    }
+
+    public Color getTileColor()
+    {
+        return tileColor;
+    }
+
+    public void setTileColor(Color tileColor)
+    {
+        this.tileColor = tileColor;
+    }
+
+    public int getTileN()
+    {
+        return tileN;
+    }
+
+    public void setTileN(int tileN)
+    {
+        this.tileN = tileN;
     }
 }

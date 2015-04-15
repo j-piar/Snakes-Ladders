@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import javax.swing.JOptionPane;
 import java.util.regex.Pattern;
 import java.awt.Color;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 /**
@@ -44,8 +45,7 @@ public class InitSettings
     {
         nOPlayers = chooseNumberOPlayers();
         Pattern p = Pattern.compile("^[A-Z]'?[- a-zA-Z]( [a-zA-Z])*$");
-        ArrayList<Color> colOption = new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE, Color.PINK));
-        
+        ArrayList<String> colours = new ArrayList<>(Arrays.asList("Yellow", "Green", "Blue", "Pink"));
         do
         {
             for (int i = 0; i < nOPlayers; i++)
@@ -60,16 +60,24 @@ public class InitSettings
                     getPlayersList().remove(i);
                 else
                 {
-                    Color c = (Color)JOptionPane.showInputDialog(
+                    Color c;
+                    String s = (String)JOptionPane.showInputDialog(
                             null, "Choose player`s colour",
                             "Settings", JOptionPane.PLAIN_MESSAGE,
-                            null, 
-                            colOption.toArray(),
+                            null, colours.toArray(),
+//                            colOption.toArray(),
                             null);
+                    try
+                    {
+                        Field field = Class.forName("java.awt.Color").getField(s.toLowerCase());
+                        c = (Color) field.get(null);
+                    }catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
+                    {c = null;}
                     getPlayersList().get(i).setPlayerColour(c);
-                    colOption.remove(c);
+                    colours.remove(s);
                 }
             }
+            getPlayersList().get(0).setMyTurn(true);
         }
         while (getPlayersList().size() != nOPlayers);
     }
@@ -85,7 +93,7 @@ public class InitSettings
         {
             s = (String)JOptionPane.showInputDialog(
                 null,
-                "Choose number of players",
+                "Choose game size",
                 "Settings",
                 JOptionPane.PLAIN_MESSAGE,
                 null, null, "100");

@@ -18,6 +18,8 @@ public class Player
     private String playerName;
     private final boolean inGame;
     private Point playerPosition;
+    private boolean myTurn = false;
+    private int playerTileN = 1;
     
     public Player(String playerName)
     {
@@ -54,6 +56,26 @@ public class Player
     public void setPlayerPosition(Point playerPosition)
     {
         this.playerPosition = playerPosition;
+    }
+
+    public boolean isMyTurn()
+    {
+        return myTurn;
+    }
+
+    public void setMyTurn(boolean myTurn)
+    {
+        this.myTurn = myTurn;
+    }
+
+    public int getPlayerTileN()
+    {
+        return playerTileN;
+    }
+
+    public void setPlayerTileN(int playerTileN)
+    {
+        this.playerTileN = playerTileN;
     }
     
 }
